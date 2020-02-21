@@ -1,13 +1,19 @@
+require("./setup");
+
 const { expect } = require("chai");
-const server = require("../server");
 const faker = require("faker");
 const User = require("../models/User");
-const { agent } = require("./setup");
+const chai = require("chai");
+const chaiHttp = require("chai-http");
+const server = require("../server");
 
-describe("POST /user", () => {
+chai.use(chaiHttp);
+
+describe("POST /users", () => {
   it("validates the request body", async () => {
+    let res;
     try {
-      const res = await agent.post("/users").send({
+      res = await chai.request(server).post('/users').send({
         user: {}
       });
     } catch (err) {
@@ -18,7 +24,7 @@ describe("POST /user", () => {
     expect(res.body.errors.email.rule).to.eq("required");
     expect(res.body.errors.password.rule).to.eq("required");
 
-    const res2 = await agent.post("/users").send({
+    const res2 = await chai.request(server).post('/users').send({
       user: {
         name: faker.random.alphaNumeric(31),
         email: faker.random.alphaNumeric(10),
@@ -36,12 +42,7 @@ describe("POST /user", () => {
       email: faker.internet.email(),
       password: faker.internet.password()
     };
-    await agent.post("/users").send({ user });
+    await chai.request(server).post('/users').send({ user });
     expect(await User.find({ email: user.email })).is.not.undefined;
-    console.log(await User.find({ email: user.email }));
   });
 });
-
-/*
-
-          */

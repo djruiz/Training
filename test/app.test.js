@@ -11,10 +11,3 @@ describe("GET / ", () => {
     expect(res.text).to.eq("Home");
   });
 });
-
-describe("GET /test", () => {
-  it("returns the string test", async () => {
-    const res = await chai.request(server).get("/test");
-    expect(res.text).to.eq("Test");
-  });
-});
